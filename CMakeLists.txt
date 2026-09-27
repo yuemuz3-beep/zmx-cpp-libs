@@ -5,10 +5,22 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(libs/bigint)
 
-add_executable(bigint_demo examples/bigint/bigint_demo.cpp)
-
+add_executable(bigint_demo
+        examples/bigint/bigint_demo.cpp
+)
 target_link_libraries(bigint_demo PRIVATE bigint)
 
 add_executable(normalize_test
         tests/bigint/normalize_test.cpp
 )
+target_link_libraries(normalize_test PRIVATE bigint)
+
+add_executable(BigInt_test
+        tests/bigint/BigInt_test.cpp
+)
+target_link_libraries(BigInt_test PRIVATE bigint)
+
+add_executable(algorithm_test
+        tests/bigint/algorithm_test.cpp
+)
+target_link_libraries(algorithm_test PRIVATE bigint)

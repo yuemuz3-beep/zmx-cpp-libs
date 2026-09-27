@@ -1,9 +1,10 @@
+/*
 #include "bigint.h"
 #include <iostream>
 #include <string>
 
 using namespace std;
-using namespace bigint;
+using namespace zmx;
 
 
 // ==================== 测试工具 ====================
@@ -230,7 +231,7 @@ void test_div_dec_case(
         int p,
         const std::string& expected
 ) {
-    std::string actual = div_dec(s1, s2, p);
+    std::string actual = div_decimal(s1, s2, p);
 
     std::cout << s1 << " / " << s2
               << " (p=" << p << ") = "
@@ -299,6 +300,42 @@ int main() {
     test_division();
 
     test_div_dec();
+
+    return 0;
+}*/
+
+#include "bigint.h"
+
+#include <iostream>
+
+using namespace zmx;
+
+int main() {
+    BigInt a("123456789012345678901234567890");
+    BigInt b("98765432109876543210");
+
+    std::cout << "a = " << a.to_string() << '\n';
+    std::cout << "b = " << b.to_string() << '\n';
+
+    std::cout << "\na + b = " << (a + b).to_string() << '\n';
+    std::cout << "a - b = " << (a - b).to_string() << '\n';
+    std::cout << "a * b = " << (a * b).to_string() << '\n';
+    std::cout << "a / b = " << (a / b).to_string() << '\n';
+    std::cout << "a % b = " << (a % b).to_string() << '\n';
+
+    BigInt c;
+    c = "999999999999999999999999";
+
+    std::cout << "\nc = " << c.to_string() << '\n';
+
+    std::cout << "\nDecimal division:\n";
+    std::cout << "1 / 3 = "
+              << div_decimal("1", "3", 10)
+              << '\n';
+
+    std::cout << "10 / 6 = "
+              << div_decimal("10", "6", 5)
+              << '\n';
 
     return 0;
 }

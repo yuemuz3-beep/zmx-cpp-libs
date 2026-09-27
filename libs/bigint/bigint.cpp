@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <cstdlib>
+#include <utility>
 #include <vector>
 namespace {
     std::string normalize(std::string s){
@@ -24,11 +25,11 @@ namespace {
         if(is_neg&&s!="0")s='-'+s;
         return s;
     }
-    int cmp_abs(const std::string& us1,const std::string& us2){
+    int cmp_abs(const std::string& us1,const std::string& us2){//绝对值比较函数
         if( us1.size()>us2.size()
-        || (us1.size() == us2.size() && us1>us2))return 1;
-        else if(us1==us2)return 0;
-        else return -1;
+        || (us1.size() == us2.size() && us1>us2))return 1;//us1大于us2返回1
+        else if(us1==us2)return 0;//us1等于us2返回0
+        else return -1;//us1小于us2返回-1
     }
     std::string add_abs(const std::string& us1,const std::string& us2) {
         std::string ans;
@@ -91,7 +92,7 @@ namespace {
         return ans;
     }
 }
-namespace bigint{
+namespace zmx{
 
     //有符号高精度加法
     std::string add(std::string s1,std::string s2){
@@ -259,10 +260,13 @@ namespace bigint{
     }
 
     //有符号除法高精度求商保留p位小数
-    std::string div_dec(std::string s1,std::string s2,int p){
+    std::string div_decimal(std::string s1,std::string s2,int p){
         //加入处理字符串为空的异常情况
         s1 = normalize(s1);
         s2 = normalize(s2);
+        if (p < 0) {
+            throw std::runtime_error("小数位数不能为负数！");
+        }
 
         std::string ans;
         std::string r;
@@ -278,9 +282,11 @@ namespace bigint{
         if (us2 == "0") {
             throw std::runtime_error("除数不能为0！");
         }
-        if(us1 == "0")
-            return std::string("0.") + std::string(p, '0');
-
+        if (us1 == "0") {
+            if (p == 0)
+                return "0";
+            return "0." + std::string(p, '0');
+        }
         //整数部分
         for(auto item:us1){
             if(r == "0")
@@ -346,7 +352,17 @@ namespace bigint{
             if(i<0)ans='1'+ans;
         }
 
-        ans=is_neg?'-'+ans:ans;
+        bool all_zero = true;
+        for (char c : ans) {
+            if (c != '0' && c != '.') {
+                all_zero = false;
+                break;
+            }
+        }
+
+        if (is_neg && !all_zero) {
+            ans = '-' + ans;
+        }
         return ans;
     }
 
@@ -570,4 +586,107 @@ namespace bigint{
     }
     */
 
-}//namespace bigint
+    BigInt::BigInt()
+        :value("0"){
+    }
+
+    BigInt::BigInt(std::string s)
+        : value(normalize(std::move(s))){
+    }
+
+    std::string BigInt::to_string() const {
+        return value;
+    }
+
+    //赋值
+    BigInt& BigInt::operator=(const std::string& s) {
+        value= normalize(s);
+        return *this;
+    }
+
+    //基础运算
+    BigInt BigInt::operator+(const BigInt& other) const {
+        return BigInt(add(value,other.value));
+    }
+
+    BigInt BigInt::operator-(const BigInt& other) const {
+        return BigInt(sub(value,other.value));
+    }
+
+    BigInt BigInt::operator*(const BigInt& other) const {
+        return BigInt(mul(value,other.value));
+    }
+
+    BigInt BigInt::operator/(const BigInt& other) const {
+        return BigInt(div_rem(value,other.value).quotient);
+    }
+
+    BigInt BigInt::operator%(const BigInt& other) const {
+        return BigInt(div_rem(value,other.value).remainder);
+    }
+
+    //比较运算
+    bool BigInt::operator==(const BigInt& other)const{
+        return value==other.value;
+    }
+
+    bool BigInt::operator<(const BigInt& other)const{
+        bool neg_a=value[0]=='-';
+        bool neg_b=other.value[0]=='-';
+        if(neg_a!=neg_b){
+            return neg_a;
+        }
+        std::string ua=neg_a?value.substr(1):value;
+        std::string ub=neg_b?other.value.substr(1):other.value;
+
+        int cmp = cmp_abs(ua, ub);
+        if(!neg_a){
+            return cmp<0;
+        }
+        return cmp>0;
+    }
+
+    bool BigInt::operator!=(const BigInt& other) const {
+        return !(*this == other);
+    }
+
+    bool BigInt::operator>(const BigInt& other) const {
+        return other < *this;
+    }
+
+    bool BigInt::operator<=(const BigInt& other) const {
+        return !(other < *this);
+    }
+
+    bool BigInt::operator>=(const BigInt& other) const {
+        return !(*this < other);
+    }
+
+    //复合运算
+    BigInt& BigInt::operator+=(const BigInt& other) {
+        *this=*this+other;
+        return *this;
+    }
+
+    BigInt& BigInt::operator-=(const BigInt& other) {
+        *this=*this-other;
+        return *this;
+    }
+
+    BigInt& BigInt::operator*=(const BigInt& other) {
+        *this=*this*other;
+        return *this;
+    }
+
+    BigInt& BigInt::operator/=(const BigInt& other) {
+        *this=*this/other;
+        return *this;
+    }
+
+    BigInt& BigInt::operator%=(const BigInt& other) {
+        *this=*this%other;
+        return *this;
+    }
+
+
+}//namespace zmx
