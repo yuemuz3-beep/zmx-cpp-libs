@@ -16,14 +16,37 @@
 
 ## 项目结构
 
+<!-- TREE START -->
+
 ```text
 zmx-cpp-libs/
-├── libs/
-│   └── bigint/
-├── examples/
-└── tests/
+├── .gitignore
+├── CMakeLists.txt
+├── README.md
+├── examples
+│   └── bigint
+│       └── bigint_demo.cpp
+├── libs
+│   ├── bigint
+│   │   ├── CMakeLists.txt
+│   │   ├── README.md
+│   │   ├── bigint.cpp
+│   │   └── bigint.h
+│   └── decimal
+│       ├──  README.md
+│       ├── CMakeLists.txt
+│       ├── decimal.cpp
+│       └── decimal.h
+├── scripts
+│   └── update-tree.py
+└── tests
+    └── bigint
+        ├── BigInt_test.cpp
+        ├── algorithm_test.cpp
+        └── normalize_test.cpp
 ```
 
+<!-- TREE END -->
 ## TODO
 - [ ] 增加更多竞赛常用库
 - [ ] 完善自动化测试

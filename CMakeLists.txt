@@ -22,5 +22,7 @@ target_link_libraries(BigInt_test PRIVATE bigint)
 
 add_executable(algorithm_test
         tests/bigint/algorithm_test.cpp
+        libs/decimal/decimal.cpp
+        libs/decimal/decimal.h
 )
 target_link_libraries(algorithm_test PRIVATE bigint)
