@@ -4,6 +4,7 @@ project(zmx-cpp-libs)
 set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(libs/bigint)
+add_subdirectory(libs/decimal)
 
 add_executable(bigint_demo
         examples/bigint/bigint_demo.cpp
@@ -22,7 +23,10 @@ target_link_libraries(BigInt_test PRIVATE bigint)
 
 add_executable(algorithm_test
         tests/bigint/algorithm_test.cpp
-        libs/decimal/decimal.cpp
-        libs/decimal/decimal.h
 )
 target_link_libraries(algorithm_test PRIVATE bigint)
+
+add_executable(decimal_normalize_test
+        tests/decimal/decimal_normalize_test.cpp
+)
+target_link_libraries(decimal_normalize_test PRIVATE decimal)

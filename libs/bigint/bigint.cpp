@@ -590,8 +590,8 @@ namespace zmx{
         :value("0"){
     }
 
-    BigInt::BigInt(std::string s)
-        : value(normalize(std::move(s))){
+    BigInt::BigInt(std::string s){
+        value=normalize(std::move(s));
     }
 
     std::string BigInt::to_string() const {
